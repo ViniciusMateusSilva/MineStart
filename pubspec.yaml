@@ -1,15 +1,14 @@
 name: minestart
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
-  sdk: ^3.10.4
+  sdk: ^3.11.1
 
 dependencies:
   flutter:
     sdk: flutter
-  mongo_dart: ^0.10.2  # Use esta versão para Windows
 
 dev_dependencies:
   flutter_test:
@@ -18,5 +17,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
+  assets:
+    - assets/images/
 
