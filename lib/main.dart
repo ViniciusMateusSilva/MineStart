@@ -110,7 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text("MineStart"),
+        toolbarHeight: 90,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 12, left: 20, right: 20, bottom: 4),
+          child: Image.asset('lib/assets/images/logo.png', height: 80),
+        ),
         centerTitle: true,
       ),
       body: PageView(
@@ -156,12 +160,152 @@ class _MyHomePageState extends State<MyHomePage> {
 // ============================================================================
 // TELAS
 // ============================================================================
+
+
 class BodyDaHomeImagem extends StatelessWidget {
   const BodyDaHomeImagem({super.key});
+
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text("Home", style: TextStyle(fontSize: 30)));
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          _cardHero(),
+          _cardSection("🚀 Sobre a plataforma",
+              "Transformamos o aprendizado técnico em uma experiência prática dentro do jogo.\n\n"
+              "Nossa plataforma utiliza o Minecraft como ambiente de simulação para treinar colaboradores em processos industriais, segurança do trabalho e operação de sistemas — tudo de forma gamificada e altamente envolvente."),
+          _cardList("🎯 Benefícios", [
+            {"title": "Mais engajamento", "desc": "Treinamentos interativos aumentam a retenção e o interesse."},
+            {"title": "Aprendizado prático", "desc": "Simulações que colocam o usuário em situações reais."},
+            {"title": "Redução de custos", "desc": "Menos gastos com treinamentos presenciais e riscos."},
+            {"title": "Escalabilidade", "desc": "Treine várias equipes ao mesmo tempo, de qualquer lugar."},
+          ]),
+          _cardList("🏭 Como funciona", [
+            {"title": "1. Escolha o treinamento", "desc": "Selecione entre diversos módulos industriais."},
+            {"title": "2. Acesse o ambiente no Minecraft", "desc": "Entre em um mundo virtual com simulações."},
+            {"title": "3. Aprenda na prática", "desc": "Realize tarefas, tome decisões e complete objetivos."},
+            {"title": "4. Acompanhe os resultados", "desc": "A plataforma registra desempenho em tempo real."},
+          ]),
+          _cardList("⚙️ Diferenciais", [
+            {"title": "Realismo", "desc": "Simulações mais realistas que plataformas tradicionais."},
+            {"title": "Customização", "desc": "Adaptável para diferentes tipos de indústria."},
+            {"title": "Integração", "desc": "Dashboards e relatórios conectados."},
+            {"title": "Gamificação", "desc": "Experiência envolvente que aumenta desempenho."},
+          ]),
+          _cardList("🧠 Para quem é", [
+            {"title": "Empresas industriais", "desc": ""},
+            {"title": "Equipes operacionais", "desc": ""},
+            {"title": "Segurança do trabalho", "desc": ""},
+            {"title": "Instituições de ensino técnico", "desc": ""},
+          ]),
+          _cardSection("📊 Resultado esperado",
+              "Colaboradores mais preparados, menos erros operacionais e maior eficiência nos processos."),
+          _cardCTA(),
+        ],
+      ),
+    );
+  }
+
+  // HERO CARD
+  Widget _cardHero() {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              "Treinamentos industriais imersivos dentro do Minecraft",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Capacite equipes de forma prática, interativa e escalável com simulações reais de ambiente industrial.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: () {}, child: const Text("👉 Ver treinamentos")),
+            const SizedBox(height: 10),
+            OutlinedButton(onPressed: () {}, child: const Text("👉 Solicitar demonstração")),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // SECTION CARD
+  Widget _cardSection(String titulo, String conteudo) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(titulo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Text(conteudo, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // LIST CARD (benefícios, diferenciais, etc.)
+  Widget _cardList(String titulo, List<Map<String, String>> itens) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(titulo, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            ...itens.map((item) => ListTile(
+                  leading: const Icon(Icons.check_circle, color: Colors.blue),
+                  title: Text(item["title"]!, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: item["desc"]!.isNotEmpty ? Text(item["desc"]!) : null,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // CTA FINAL
+  Widget _cardCTA() {
+    return Card(
+      color: Colors.blue.shade50,
+      elevation: 6,
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              "🔥 Leve o treinamento da sua equipe para outro nível.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: () {}, child: const Text("👉 Solicite uma demonstração")),
+            const SizedBox(height: 10),
+            OutlinedButton(onPressed: () {}, child: const Text("👉 Comece agora")),
+          ],
+        ),
+      ),
+    );
+  }
 }
+
 
 class BodyDoTreinamentos extends StatelessWidget {
   const BodyDoTreinamentos({super.key});
