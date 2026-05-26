@@ -118,26 +118,31 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: PageView(
-        controller: pgController,
-        children: [
-          const BodyDaHomeImagem(),
-          const BodyDoTreinamentos(),
-          const BodyDoSobre(),
-          const BodyDoCadastro(),
-          BodyDoLogin(onLoginSuccess: () {
-            setState(() {
-              usuarioLogado = true;
-            });
-            mudarPagina(5);
-          }),
-          const BodyDoPerfil(),
-        ],
-        onPageChanged: (value) {
-          setState(() {
-            indexDoBottomNavBar = value;
-          });
-        },
-      ),
+  controller: pgController,
+  children: [
+    BodyDaHomeImagem(
+      onVerTreinamentos: () {
+        mudarPagina(1); // índice da página de Treinamentos
+      },
+    ),
+    const BodyDoTreinamentos(),
+    const BodyDoSobre(),
+    const BodyDoCadastro(),
+    BodyDoLogin(onLoginSuccess: () {
+      setState(() {
+        usuarioLogado = true;
+      });
+      mudarPagina(5);
+    }),
+    const BodyDoPerfil(),
+  ],
+  onPageChanged: (value) {
+    setState(() {
+      indexDoBottomNavBar = value;
+    });
+  },
+),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: indexDoBottomNavBar,
         type: BottomNavigationBarType.fixed,
@@ -163,7 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 class BodyDaHomeImagem extends StatelessWidget {
-  const BodyDaHomeImagem({super.key});
+  final VoidCallback onVerTreinamentos;
+
+  const BodyDaHomeImagem({super.key, required this.onVerTreinamentos});
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +178,7 @@ class BodyDaHomeImagem extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _cardHero(),
+          _heroSection(),
           _cardSection("🚀 Sobre a plataforma",
               "Transformamos o aprendizado técnico em uma experiência prática dentro do jogo.\n\n"
               "Nossa plataforma utiliza o Minecraft como ambiente de simulação para treinar colaboradores em processos industriais, segurança do trabalho e operação de sistemas — tudo de forma gamificada e altamente envolvente."),
@@ -207,37 +214,33 @@ class BodyDaHomeImagem extends StatelessWidget {
     );
   }
 
-  // HERO CARD
-  Widget _cardHero() {
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text(
-              "Treinamentos industriais imersivos dentro do Minecraft",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "Capacite equipes de forma prática, interativa e escalável com simulações reais de ambiente industrial.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: const Text("👉 Ver treinamentos")),
-            const SizedBox(height: 10),
-            OutlinedButton(onPressed: () {}, child: const Text("👉 Solicitar demonstração")),
-          ],
-        ),
+  Widget _heroSection() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const Text(
+            "Treinamentos industriais imersivos dentro do Minecraft",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            "Capacite equipes de forma prática, interativa e escalável com simulações reais de ambiente industrial.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: onVerTreinamentos, // leva para Treinamentos
+            child: const Text("👉 Ver treinamentos"),
+          ),
+          const SizedBox(height: 10)
+        ],
       ),
     );
   }
 
-  // SECTION CARD
   Widget _cardSection(String titulo, String conteudo) {
     return Card(
       elevation: 4,
@@ -256,7 +259,6 @@ class BodyDaHomeImagem extends StatelessWidget {
     );
   }
 
-  // LIST CARD (benefícios, diferenciais, etc.)
   Widget _cardList(String titulo, List<Map<String, String>> itens) {
     return Card(
       elevation: 4,
@@ -279,7 +281,6 @@ class BodyDaHomeImagem extends StatelessWidget {
     );
   }
 
-  // CTA FINAL
   Widget _cardCTA() {
     return Card(
       color: Colors.blue.shade50,
@@ -298,7 +299,6 @@ class BodyDaHomeImagem extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(onPressed: () {}, child: const Text("👉 Solicite uma demonstração")),
             const SizedBox(height: 10),
-            OutlinedButton(onPressed: () {}, child: const Text("👉 Comece agora")),
           ],
         ),
       ),
@@ -309,10 +309,116 @@ class BodyDaHomeImagem extends StatelessWidget {
 
 class BodyDoTreinamentos extends StatelessWidget {
   const BodyDoTreinamentos({super.key});
+
+  final treinamentos = const [
+    {
+      "titulo": "Segurança do Trabalho",
+      "descricao": "Normas e práticas essenciais.",
+      "duracao": "2h",
+      "nivel": "Básico",
+      "objetivos": "Capacitar colaboradores em práticas seguras."
+    },
+    {
+      "titulo": "Operação de Máquinas",
+      "descricao": "Treinamento prático em ambiente simulado.",
+      "duracao": "3h",
+      "nivel": "Intermediário",
+      "objetivos": "Ensinar operação correta e segura de máquinas."
+    },
+    {
+      "titulo": "Processos Industriais",
+      "descricao": "Fluxos e boas práticas de produção.",
+      "duracao": "4h",
+      "nivel": "Avançado",
+      "objetivos": "Aprimorar conhecimento em processos industriais."
+    },
+  ];
+
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text("Treinamentos", style: TextStyle(fontSize: 30)));
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: treinamentos.length,
+      itemBuilder: (context, index) {
+        final t = treinamentos[index];
+        return Card(
+          child: ListTile(
+            leading: const Icon(Icons.school, color: Colors.blue),
+            title: Text(t["titulo"]!),
+            subtitle: Text(t["descricao"]!),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DetalhesTreinamento(
+                    titulo: t["titulo"]!,
+                    descricao: t["descricao"]!,
+                    duracao: t["duracao"]!,
+                    nivel: t["nivel"]!,
+                    objetivos: t["objetivos"]!,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 }
+
+class DetalhesTreinamento extends StatelessWidget {
+  final String titulo;
+  final String descricao;
+  final String duracao;
+  final String nivel;
+  final String objetivos;
+
+  const DetalhesTreinamento({
+    super.key,
+    required this.titulo,
+    required this.descricao,
+    required this.duracao,
+    required this.nivel,
+    required this.objetivos,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(titulo)),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(titulo, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Text(descricao),
+            const SizedBox(height: 20),
+            Text("📌 Objetivos: $objetivos"),
+            const SizedBox(height: 10),
+            Text("⏳ Duração: $duracao"),
+            const SizedBox(height: 10),
+            Text("🎯 Nível: $nivel"),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Treinamento '$titulo' iniciado!")),
+                );
+              },
+              child: const Text("Iniciar Treinamento"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
 
 class BodyDoSobre extends StatelessWidget {
   const BodyDoSobre({super.key});
