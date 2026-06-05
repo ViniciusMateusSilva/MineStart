@@ -46,14 +46,13 @@ class MongoDBService {
   }
 }
 
-// ============================================================================
-// MAIN
-// ============================================================================
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MongoDBService.connect(); // abre a conexão ANTES do app
   runApp(const MyApp());
 }
+
 
 // ============================================================================
 // APP PRINCIPAL
@@ -68,10 +67,31 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+void mostrarPopupContato(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: const Text("Entre em contato"),
+        content: const Text(
+          "Para solicitar uma demonstração ou iniciar um treinamento, "
+          "entre em contato com nossa equipe:\n\n"
+          "📧 Email: contato@minestart.com\n"
+          "📞 Telefone: (11) 99999-9999",
+          textAlign: TextAlign.start,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Fechar"),
+          ),
+        ],
+      );
+    },
+  );
+}
 
-// ============================================================================
-// HOME PAGE COM NAVEGAÇÃO
-// ============================================================================
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
@@ -208,13 +228,13 @@ class BodyDaHomeImagem extends StatelessWidget {
           ]),
           _cardSection("📊 Resultado esperado",
               "Colaboradores mais preparados, menos erros operacionais e maior eficiência nos processos."),
-          _cardCTA(),
+          _cardCTA(context),
         ],
       ),
     );
   }
 
-  Widget _heroSection() {
+ Widget _heroSection() {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -281,29 +301,34 @@ class BodyDaHomeImagem extends StatelessWidget {
     );
   }
 
-  Widget _cardCTA() {
-    return Card(
-      color: Colors.blue.shade50,
-      elevation: 6,
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text(
-              "🔥 Leve o treinamento da sua equipe para outro nível.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: const Text("👉 Solicite uma demonstração")),
-            const SizedBox(height: 10),
-          ],
-        ),
+  Widget _cardCTA(BuildContext context) {
+  return Card(
+    color: Colors.blue.shade50,
+    elevation: 6,
+    margin: const EdgeInsets.symmetric(vertical: 20),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const Text(
+            "🔥 Leve o treinamento da sua equipe para outro nível.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              mostrarPopupContato(context); // agora funciona
+            },
+            child: const Text("👉 Solicite uma demonstração"),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
 
 
@@ -312,25 +337,25 @@ class BodyDoTreinamentos extends StatelessWidget {
 
   final treinamentos = const [
     {
-      "titulo": "Segurança do Trabalho",
-      "descricao": "Normas e práticas essenciais.",
+      "titulo": "NR1 – Disposições Gerais",
+      "descricao": "Responsabilidades básicas de empresa e funcionários.",
       "duracao": "2h",
       "nivel": "Básico",
-      "objetivos": "Capacitar colaboradores em práticas seguras."
+      "objetivos": "A Norma Regulamentadora nº 1 estabelece os princípios gerais de segurança e saúde no trabalho, definindo responsabilidades tanto da empresa quanto dos trabalhadores. Esse treinamento aborda as obrigações legais da organização em garantir um ambiente seguro e dos funcionários em cumprir as normas de segurança, criando uma base para todas as demais NRs."
     },
     {
-      "titulo": "Operação de Máquinas",
-      "descricao": "Treinamento prático em ambiente simulado.",
+      "titulo": "NR35 – Trabalho em Altura",
+      "descricao": "Segurança e práticas para atividades acima de 2 metros.",
       "duracao": "3h",
       "nivel": "Intermediário",
-      "objetivos": "Ensinar operação correta e segura de máquinas."
+      "objetivos": "A NR35 trata das medidas de proteção para atividades realizadas acima de 2 metros do nível inferior, onde haja risco de queda. Breve resumo: O treinamento ensina técnicas seguras para trabalhos em altura, uso correto de equipamentos, análise de risco e procedimentos de emergência, garantindo a integridade física dos trabalhadores."
     },
     {
-      "titulo": "Processos Industriais",
-      "descricao": "Fluxos e boas práticas de produção.",
+      "titulo": "NR6 – Equipamentos de Proteção Individual (EPI)",
+      "descricao": "Uso correto e importância dos EPIs no trabalho.",
       "duracao": "4h",
       "nivel": "Avançado",
-      "objetivos": "Aprimorar conhecimento em processos industriais."
+      "objetivos": "A NR6 regulamenta o fornecimento, uso e manutenção dos Equipamentos de Proteção Individual. Breve resumo: O treinamento explica a importância dos EPIs, como utilizá-los corretamente e a responsabilidade da empresa em fornecê-los e do trabalhador em usá-los, reduzindo riscos ocupacionais."
     },
   ];
 
@@ -404,13 +429,12 @@ class DetalhesTreinamento extends StatelessWidget {
             Text("🎯 Nível: $nivel"),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Treinamento '$titulo' iniciado!")),
-                );
-              },
-              child: const Text("Iniciar Treinamento"),
-            ),
+  onPressed: () {
+    mostrarPopupContato(context);
+  },
+  child: const Text("Solicitar demonstração"),
+),
+
           ],
         ),
       ),
@@ -420,11 +444,103 @@ class DetalhesTreinamento extends StatelessWidget {
 
 
 
+
 class BodyDoSobre extends StatelessWidget {
   const BodyDoSobre({super.key});
+
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: Text("Sobre", style: TextStyle(fontSize: 30)));
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _sectionTitle("📌 Sobre o MineStart"),
+              _sectionText(
+                "O MineStart é uma plataforma digital desenvolvida para oferecer "
+                "treinamentos industriais imersivos e capacitação profissional de forma prática, "
+                "acessível e envolvente. Utilizando o ambiente do Minecraft como simulação, "
+                "a solução conecta teoria e prática, permitindo que empresas e usuários individuais "
+                "treinem em cenários reais de forma gamificada."
+              ),
+
+              _sectionTitle("🎯 Missão"),
+              _sectionText(
+                "Facilitar o acesso à capacitação profissional, promovendo o desenvolvimento de "
+                "competências e apoiando empresas na gestão de treinamentos internos."
+              ),
+
+              _sectionTitle("⚙️ Diferenciais"),
+              _bulletList([
+                "Treinamentos gamificados que aumentam engajamento e retenção.",
+                "Simulações realistas de processos industriais e segurança do trabalho.",
+                "Interface intuitiva e fácil de usar.",
+                "Escalabilidade: treine várias equipes ao mesmo tempo, em qualquer lugar.",
+                "Impacto social alinhado aos ODS 4 (Educação de Qualidade) e ODS 8 (Trabalho Decente e Crescimento Econômico).",
+              ]),
+
+              _sectionTitle("👥 Público-Alvo"),
+              _bulletList([
+                "Empresas que buscam padronizar e melhorar treinamentos internos.",
+                "Profissionais em busca de capacitação.",
+                "Estudantes que desejam complementar sua formação.",
+                "Pessoas em processo de inserção ou recolocação no mercado de trabalho.",
+              ]),
+
+              _sectionTitle("📊 Impacto esperado"),
+              _sectionText(
+                "Colaboradores mais preparados, redução de erros operacionais e maior eficiência nos processos, "
+                "além de contribuir para a democratização do acesso à educação e ao desenvolvimento profissional."
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widgets auxiliares
+  Widget _sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _sectionText(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16),
+        textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget _bulletList(List<String> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: items.map((item) => Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("• ", style: TextStyle(fontSize: 16)),
+            Expanded(child: Text(item, style: const TextStyle(fontSize: 16))),
+          ],
+        ),
+      )).toList(),
+    );
+  }
 }
 
 // ============================================================================
